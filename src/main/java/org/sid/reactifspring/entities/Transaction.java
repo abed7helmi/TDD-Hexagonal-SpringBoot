@@ -1,5 +1,6 @@
 package org.sid.reactifspring.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,8 @@ public class Transaction {
     private String id;
     private Instant instant;
     private double price;
-    @DBRef // je fait une reference vers une societe qui sera stocke dans une autre collection
-    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    // je fait une reference vers une societe qui sera stocke dans une autre collection
+    // @DBRef
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Societe societe;
 }
