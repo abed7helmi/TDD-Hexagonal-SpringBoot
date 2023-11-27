@@ -99,12 +99,12 @@ public class TransactionReactiveRestController {
     // recuperer des flux l'autre service.
 
     @GetMapping(value = "/events/{id}",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-    public  Flux<Event>   events(@PathVariable String id){
+    public  Flux<Double>   events(@PathVariable String id){
         WebClient webClient=WebClient.create("http://localhost:8081"); // comme RestTemplate
-        Flux<Event> eventFlux=webClient.get()
+        Flux<Double> eventFlux=webClient.get()
                 .uri("/streamEvents/"+id)
-                .retrieve().bodyToFlux(Event.class);
-
+                .retrieve().bodyToFlux(Event.class)
+                .map(data->data.getValue());
         return eventFlux;
 
     }
@@ -116,6 +116,7 @@ public class TransactionReactiveRestController {
         private double value;
         private String societeID ;
     }
+
 
 
     @GetMapping("/test")
