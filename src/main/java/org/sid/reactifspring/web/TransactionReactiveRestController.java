@@ -1,6 +1,10 @@
 package org.sid.reactifspring.web;
 
 import jdk.jfr.Event;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.sid.reactifspring.dao.SocieteRepository;
 import org.sid.reactifspring.dao.TransactionRepository;
 import org.sid.reactifspring.entities.Societe;
@@ -92,19 +96,32 @@ public class TransactionReactiveRestController {
                 });
     }
 
-//    @GetMapping(value = "/events/{id}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public  Flux<Double>   events(@PathVariable String id){
-//        WebClient webClient=WebClient.create("http://localhost:8082");
-//        Flux<Double> eventFlux=webClient.get()
-//                .uri("/streamEvents/"+id)
-//                .retrieve().bodyToFlux(Event.class)
-//                .map(data->data.getValue());
-//        return eventFlux;
-//
-//    }
+    // recuperer des flux l'autre service.
+
+    @GetMapping(value = "/events/{id}",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    public  Flux<Event>   events(@PathVariable String id){
+        WebClient webClient=WebClient.create("http://localhost:8081"); // comme RestTemplate
+        Flux<Event> eventFlux=webClient.get()
+                .uri("/streamEvents/"+id)
+                .retrieve().bodyToFlux(Event.class);
+
+        return eventFlux;
+
+    }
+
+
+    @Data
+    static class Event {
+        private Instant instant ;
+        private double value;
+        private String societeID ;
+    }
+
+
     @GetMapping("/test")
     public String test(){
         return Thread.currentThread().getName();
     }
+
 
 }
